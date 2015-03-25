@@ -14,13 +14,14 @@ public class Celda
     private boolean marca;
     private boolean vacia;
     private JButton boton;
-    
+    private int numMinasAd;
     public Celda(JButton boton)
     {
         this.boton=boton;
         mina=false;
         marca=false;
         vacia = false;
+        numMinasAd=0;
         /*cont++;*/
     }
    
@@ -40,6 +41,9 @@ public class Celda
         return vacia;
     }
     
+    public int getNumMinasAd(){
+        return numMinasAd;
+    }
     public void setMarca(boolean marca){
         this.marca=marca;
     }
@@ -49,5 +53,9 @@ public class Celda
     }
     public void setVacia(boolean vacia){
         this.vacia=vacia;
+    }
+    
+    public void setNumMinasAd(int numMinasAd){
+        this.numMinasAd=numMinasAd;
     }
 }

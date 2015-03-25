@@ -17,7 +17,7 @@ public class Interfaz {
     public static JPanel panelMatriz= new JPanel();
             
     public static void rellenaPanelMatriz(){
-        
+        //Pasar este metodo a recursivo
         for(int i=0; i<tablero.celdas.length;i++)
             for (int j=0;j<tablero.celdas.length;j++)
                 panelMatriz.add(tablero.celdas[i][j].getBoton());

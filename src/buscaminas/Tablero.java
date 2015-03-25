@@ -40,7 +40,7 @@ public class Tablero
             //A todos los botones de la matriz se les ha puesto un mouse listener para capturar los clicks o eventos
             celdas[a][b].getBoton().addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
-                      juego(e,celdas[a][b],a,b);
+                      juego(e,celdas[a][b],b,a);
                 }
              });
             rellenaMatriz2(a,b+1);
@@ -56,7 +56,11 @@ public class Tablero
                     celda.getBoton().setText("V");
                     celda.setVacia(true);
                     ponMinas(col, row);
+                    System.out.println(col+","+row);
                     buscarMinas(col,row);
+                }else{
+                     buscarMinas(col,row);
+                    System.out.println(col+","+row);
                 }
 	    }	    
             //si el boton derecho es pulsado
@@ -79,7 +83,10 @@ public class Tablero
         while(cont<10){
             int a=(int)(Math.random()*7);
             int b=(int)(Math.random()*7);
-            if(!celdas[a][b].getMina()&& (col!=a || row!=b)){
+            if(!celdas[a][b].getMina()&&
+                    ( (col!=b || row!=a)&& (col-1!=b || row-1!=a)&& (col!=b || row-1!=a)&& (col+1!=b || row-1!=a)
+                       &&(row!=a|| col-1!=b)&&(row!=a|| col+1!=b)
+                       &&(row+1!=a || col-1!=b)&&(row+1!=a || col!=b)&&(row+1!=a || col+1!=b))){
                 celdas[a][b].setMina(true);
                 celdas[a][b].getBoton().setText("Mi");
                 cont++;
@@ -89,16 +96,30 @@ public class Tablero
     
     public void buscarMinas(int col,int row){
         //Intentar pensarlo en grupo
+        //obtengo la posicion de la primera adyacente
+        int firstCol=col-1;
+        int firstRow= row-1;
+        //obtengo la posicion de la ultima adyacente
+        int lastCol=col+1;
+        int lastRow=row+1;
+        
+        for(int i=firstRow; i<=lastRow;i++)
+            for(int j =firstCol; j<=lastCol;j++){
+                if(!celdas[i][j].getMina()){
+                    celdas[i][j].getBoton().setText("V");
+                    celdas[i][j].setVacia(true);
+                }
+            }
+        
     }
     
     public void reiniciar(){
         
-            
+        limpiarBotones();
         Interfaz.panelMatriz.removeAll();
         rellenaMatriz(0);
         Interfaz.rellenaPanelMatriz();
         primerTurno=true;
-        System.out.print("aewpfnj´paw");
     }
 
     public void limpiarBotones(){
