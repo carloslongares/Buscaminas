@@ -16,12 +16,29 @@ public class Interfaz {
     public static    Tablero tablero = new Tablero();
     public static JPanel panelMatriz= new JPanel();
             
-    public static void rellenaPanelMatriz(){
+   /* public static void rellenaPanelMatriz(){
         //Pasar este metodo a recursivo
         for(int i=0; i<tablero.celdas.length;i++)
             for (int j=0;j<tablero.celdas.length;j++)
                 panelMatriz.add(tablero.celdas[i][j].getBoton());
         
+    }*/
+    
+    public static void rellenaPanelMatriz(int i, int j){
+        if(j==tablero.celdas.length-1){
+            if (i==tablero.celdas.length-1){
+                panelMatriz.add(tablero.celdas[i][j].getBoton());
+            }
+            else{
+                panelMatriz.add(tablero.celdas[i][j].getBoton());
+                rellenaPanelMatriz(i+1,0);
+            }
+            
+        }
+        else{
+            panelMatriz.add(tablero.celdas[i][j].getBoton());
+            rellenaPanelMatriz(i,j+1);
+        }
     }
     
     public static void main(String[] args){
@@ -50,7 +67,7 @@ public class Interfaz {
         //PARTE GRAFICA
      
         
-        rellenaPanelMatriz();
+        rellenaPanelMatriz(0,0);
         //NO TOCAR ESTO SIEMPRE AL FINAL
         pane.add(panelTop);
         pane.add(panelMatriz);

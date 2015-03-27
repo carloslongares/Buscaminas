@@ -53,14 +53,15 @@ public class Tablero
 	    {
                 if(primerTurno){
                     primerTurno= false;
-                    celda.getBoton().setText("V");
-                    celda.setVacia(true);
+                    //celda.getBoton().setText("V");
+                    //celda.setVacia(true);
                     ponMinas(col, row);
-                    System.out.println(col+","+row);
+                    //System.out.println(col+","+row);
+                    contarTablero();
                     buscarMinas(col,row);
                 }else{
                      buscarMinas(col,row);
-                    System.out.println(col+","+row);
+                    //System.out.println(col+","+row);
                 }
 	    }	    
             //si el boton derecho es pulsado
@@ -83,10 +84,7 @@ public class Tablero
         while(cont<10){
             int a=(int)(Math.random()*7);
             int b=(int)(Math.random()*7);
-            if(!celdas[a][b].getMina()&&
-                    ( (col!=b || row!=a)&& (col-1!=b || row-1!=a)&& (col!=b || row-1!=a)&& (col+1!=b || row-1!=a)
-                       &&(row!=a|| col-1!=b)&&(row!=a|| col+1!=b)
-                       &&(row+1!=a || col-1!=b)&&(row+1!=a || col!=b)&&(row+1!=a || col+1!=b))){
+            if(!celdas[a][b].getMina()&& (col!=b || row!=a)){
                 celdas[a][b].setMina(true);
                 celdas[a][b].getBoton().setText("Mi");
                 cont++;
@@ -97,37 +95,105 @@ public class Tablero
     public void buscarMinas(int col,int row){
         //Intentar pensarlo en grupo
         //obtengo la posicion de la primera adyacente
-        int firstCol=col-1;
-        int firstRow= row-1;
+        int firstCol=getCol(col-1);
+        int firstRow= getRow(row-1);
         //obtengo la posicion de la ultima adyacente
-        int lastCol=col+1;
-        int lastRow=row+1;
+        int lastCol=getCol(col+1);
+        int lastRow=getRow(row+1);
+    
+        if(celdas[row][col].getNumMinasAd()!=0&&!celdas[row][col].getMina())
+           celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
+        else{
+            celdas[row][col].getBoton().setText("V");
+            celdas[row][col].setVacia(true);
+            for(int i=firstRow; i<=lastRow;i++)
+                for(int j =firstCol; j<=lastCol;j++)
+                    if(!celdas[i][j].getMina()&&celdas[i][j].getNumMinasAd()==0&&(col!=j || row!=i)){
+                        celdas[i][j].getBoton().setText("V");
+                        if(celdas[i][j].getVacia()==false){
+                            buscarMinas(j,i);
+                        }
+                    }else if(!celdas[i][j].getVacia())
+                        celdas[i][j].getBoton().setText(Integer.toString(celdas[i][j].getNumMinasAd()));
+          
+        }
+    }
+    
+    public void contarTablero(){
+        for (int i=0;i<8;i++)
+            for(int j=0;j<8;j++)
+                if(!celdas[i][j].getMina())
+                    contarAdyacentes(j, i);
+    
+    }
+    
+    public void contarAdyacentes(int col, int row){
+        int firstCol=getCol(col-1);
+        int firstRow= getRow(row-1);
+        //obtengo la posicion de la ultima adyacente
+        int lastCol=getCol(col+1);
+        int lastRow=getRow(row+1);
         
         for(int i=firstRow; i<=lastRow;i++)
-            for(int j =firstCol; j<=lastCol;j++){
-                if(!celdas[i][j].getMina()){
-                    celdas[i][j].getBoton().setText("V");
-                    celdas[i][j].setVacia(true);
-                }
-            }
+            for(int j =firstCol; j<=lastCol;j++)
+                if(celdas[i][j].getMina())
+                    celdas[row][col].setNumMinasAd(celdas[row][col].getNumMinasAd()+1);
+                    
+
+           
+       // if(celdas[row][col].getNumMinasAd()!=0)
+         //   celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
         
+       }
+    
+    public int getRow(int row){
+        if(row<0){
+         return 0;
+        }else if(row>7)
+            return 7;
+        else
+            return row;
+    }
+    
+    public int getCol(int col){
+        if(col<0){
+         return 0;
+        }else if(col>7)
+            return 7;
+        else
+            return col;
     }
     
     public void reiniciar(){
         
-        limpiarBotones();
+        limpiarBotones(0,0);
         Interfaz.panelMatriz.removeAll();
         rellenaMatriz(0);
-        Interfaz.rellenaPanelMatriz();
+        Interfaz.rellenaPanelMatriz(0,0);
         primerTurno=true;
     }
 
-    public void limpiarBotones(){
+   /* public void limpiarBotones(){
     //Pasar este metodo a recursivo
         for(int i=0;i<8;i++)
             for(int j=0;j<8;j++)
                 celdas[i][j].getBoton().setText("");    
+    }*/
+    public void limpiarBotones(int i, int j){
+        if(j==celdas.length-1){
+            if (i==celdas.length-1){
+                celdas[i][j].getBoton().setText("");
+            }
+            else{
+                celdas[i][j].getBoton().setText("");
+                limpiarBotones(i+1,0);
+            }
+            
+        }
+        else{
+            celdas[i][j].getBoton().setText("");
+            limpiarBotones(i,j+1);
+        }
     }
-    
     
 }
