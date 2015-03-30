@@ -15,7 +15,7 @@ public class Interfaz {
     public static JButton botonRei = new JButton("Re");
     public static    Tablero tablero = new Tablero();
     public static JPanel panelMatriz= new JPanel();
-            
+    public static JLabel numMinasLab = new JLabel("Minas restantes: 10"); 
    /* public static void rellenaPanelMatriz(){
         //Pasar este metodo a recursivo
         for(int i=0; i<tablero.celdas.length;i++)
@@ -59,9 +59,9 @@ public class Interfaz {
         JPanel panelTop= new JPanel();
         panelTop.setBounds(30, 30, 420, 90);
         panelTop.setLayout(null);
-        JLabel numMinasLab = new JLabel("Minas restantes:"); 
-        botonRei.setBounds(175, 0, 70, 50);
-        numMinasLab.setBounds(280, 0, 95, 35);
+        
+        botonRei.setBounds(0, 0, 70, 50);
+        numMinasLab.setBounds(200,0,120, 35);
         panelTop.add(botonRei);
         panelTop.add(numMinasLab);
         //PARTE GRAFICA

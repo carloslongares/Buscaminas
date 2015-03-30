@@ -13,6 +13,7 @@ public class Tablero
 {
     public Celda[][] celdas = new Celda[8][8]; 
     public boolean primerTurno = true;
+    private int numMinMarca=10;
     
     public Tablero()
     {
@@ -60,6 +61,9 @@ public class Tablero
                     contarTablero();
                     buscarMinas(col,row);
                 }else{
+                    if(celda.getMina()){
+                        perderJuego();
+                    }else
                      buscarMinas(col,row);
                     //System.out.println(col+","+row);
                 }
@@ -67,14 +71,27 @@ public class Tablero
             //si el boton derecho es pulsado
 	    else if(e.getButton() == MouseEvent.BUTTON3)
 	    {
+                
                if(!celda.getVacia() && !primerTurno)
                     if(celda.getMarca()){
                         celda.setMarca(false);
-                        celda.getBoton().setText("");    
-                    }else{
+                        celda.getBoton().setText("");
+                        numMinMarca++;
+                        Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
+                    }else if(numMinMarca!=0){
                         celda.setMarca(true);
                         celda.getBoton().setText("Ma");
+                        numMinMarca--;
+                        Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
                     }
+               
+               if(compruebaVictoria())
+                {
+                    JOptionPane.showMessageDialog(Interfaz.panelMatriz,"Has Ganado!!","=)",JOptionPane.PLAIN_MESSAGE);
+                    reiniciar();
+                }
+                else{
+                }
             }
     }
     
@@ -91,33 +108,54 @@ public class Tablero
             }
         }
     }
+    public void perderJuego(){
+        for (int i=0; i<8;i++)
+            for (int j=0; j<8;j++)
+                if(celdas[i][j].getMina())
+                     celdas[i][j].getBoton().setText("Mi");
+        JOptionPane.showMessageDialog(Interfaz.panelMatriz,"Has perdido","=(",JOptionPane.PLAIN_MESSAGE);
+        reiniciar();
+    }
+    
+    public boolean compruebaVictoria(){
+        int numMinasMarc=0;
+        for (int i=0; i<8;i++)
+            for (int j=0; j<8;j++)
+                if(celdas[i][j].getMina()&&celdas[i][j].getMarca())
+                    numMinasMarc++;
+        if(numMinasMarc==10){
+            return true;
+        }else
+            return false;
+        
+    }
     
     public void buscarMinas(int col,int row){
-        //Intentar pensarlo en grupo
-        //obtengo la posicion de la primera adyacente
-        int firstCol=getCol(col-1);
-        int firstRow= getRow(row-1);
-        //obtengo la posicion de la ultima adyacente
-        int lastCol=getCol(col+1);
-        int lastRow=getRow(row+1);
-    
-        if(celdas[row][col].getNumMinasAd()!=0&&!celdas[row][col].getMina())
-           celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
-        else{
-            celdas[row][col].getBoton().setText("V");
-            celdas[row][col].setVacia(true);
-            for(int i=firstRow; i<=lastRow;i++)
-                for(int j =firstCol; j<=lastCol;j++)
-                    if(!celdas[i][j].getMina()&&celdas[i][j].getNumMinasAd()==0&&(col!=j || row!=i)){
-                        celdas[i][j].getBoton().setText("V");
-                        if(celdas[i][j].getVacia()==false){
-                            buscarMinas(j,i);
-                        }
-                    }else if(!celdas[i][j].getVacia())
-                        celdas[i][j].getBoton().setText(Integer.toString(celdas[i][j].getNumMinasAd()));
-          
-        }
-    }
+            //obtengo la posicion de la primera adyacente
+            int firstCol=getCol(col-1);
+            int firstRow= getRow(row-1);
+            //obtengo la posicion de la ultima adyacente
+            int lastCol=getCol(col+1);
+            int lastRow=getRow(row+1);
+
+            if(celdas[row][col].getNumMinasAd()!=0&&!celdas[row][col].getMina())
+               celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
+            else{
+                celdas[row][col].getBoton().setText("V");
+                celdas[row][col].setVacia(true);
+                for(int i=firstRow; i<=lastRow;i++)
+                    for(int j =firstCol; j<=lastCol;j++)
+                        if(!celdas[i][j].getMina()&&celdas[i][j].getNumMinasAd()==0&&(col!=j || row!=i)){
+                            celdas[i][j].getBoton().setText("V");
+                            if(celdas[i][j].getVacia()==false){
+                                buscarMinas(j,i);
+                            }
+                        }else if(!celdas[i][j].getVacia())
+                            celdas[i][j].getBoton().setText(Integer.toString(celdas[i][j].getNumMinasAd()));
+
+            }
+        
+   }
     
     public void contarTablero(){
         for (int i=0;i<8;i++)
@@ -171,6 +209,8 @@ public class Tablero
         rellenaMatriz(0);
         Interfaz.rellenaPanelMatriz(0,0);
         primerTurno=true;
+        numMinMarca=10;
+        Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
     }
 
    /* public void limpiarBotones(){
