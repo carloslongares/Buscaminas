@@ -5,11 +5,10 @@ import javax.swing.JButton;
 import javax.swing.*;
 /**
  *
- * @author Carlos Longares , Daniel Fenollar , Marca Diago
+ * @author Carlos Longares , Daniel Fenollar , Marc Diago
  */
 public class Celda
 {
-    /*private static int cont=0; Lo hemos usado para comprobar que al crear no se crearán de mas*/
     private boolean mina;
     private boolean marca;
     private boolean vacia;

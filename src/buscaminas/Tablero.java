@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 /**
  *
- * @author Carlos Longares , Daniel Fenollar , Marca Diago
+ * @author Carlos Longares , Daniel Fenollar , Marc Diago
  */
 public class Tablero
 {
@@ -38,6 +38,7 @@ public class Tablero
     public void rellenaMatriz2(final int a,final int b){
         if(b<8){
             celdas[a][b]=new Celda(new JButton());
+            celdas[a][b].getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
             //A todos los botones de la matriz se les ha puesto un mouse listener para capturar los clicks o eventos
             celdas[a][b].getBoton().addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
@@ -54,10 +55,7 @@ public class Tablero
 	    {
                 if(primerTurno){
                     primerTurno= false;
-                    //celda.getBoton().setText("V");
-                    //celda.setVacia(true);
                     ponMinas(col, row);
-                    //System.out.println(col+","+row);
                     contarTablero();
                     buscarMinas(col,row);
                 }else{
@@ -65,7 +63,6 @@ public class Tablero
                         perderJuego();
                     }else
                      buscarMinas(col,row);
-                    //System.out.println(col+","+row);
                 }
 	    }	    
             //si el boton derecho es pulsado
@@ -75,12 +72,12 @@ public class Tablero
                if(!celda.getVacia() && !primerTurno)
                     if(celda.getMarca()){
                         celda.setMarca(false);
-                        celda.getBoton().setText("");
+                        celda.getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
                         numMinMarca++;
                         Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
                     }else if(numMinMarca!=0){
                         celda.setMarca(true);
-                        celda.getBoton().setText("Ma");
+                        celda.getBoton().setIcon(new ImageIcon("Imagenes/MARCA.jpg"));
                         numMinMarca--;
                         Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
                     }
@@ -95,7 +92,7 @@ public class Tablero
             }
     }
     
-    //Pasar este metodo a recursivo
+   
     public void ponMinas(int col,int row){
         int cont=0;
         while(cont<10){
@@ -103,16 +100,16 @@ public class Tablero
             int b=(int)(Math.random()*7);
             if(!celdas[a][b].getMina()&& (col!=b || row!=a)){
                 celdas[a][b].setMina(true);
-                celdas[a][b].getBoton().setText("Mi");
                 cont++;
             }
         }
     }
+    
     public void perderJuego(){
         for (int i=0; i<8;i++)
             for (int j=0; j<8;j++)
                 if(celdas[i][j].getMina())
-                     celdas[i][j].getBoton().setText("Mi");
+                     celdas[i][j].getBoton().setIcon(new ImageIcon("Imagenes/MINA.jpg"));
         JOptionPane.showMessageDialog(Interfaz.panelMatriz,"Has perdido","=(",JOptionPane.PLAIN_MESSAGE);
         reiniciar();
     }
@@ -139,23 +136,45 @@ public class Tablero
             int lastRow=getRow(row+1);
 
             if(celdas[row][col].getNumMinasAd()!=0&&!celdas[row][col].getMina())
-               celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
+               setNumero(celdas[row][col]);
             else{
-                celdas[row][col].getBoton().setText("V");
+                System.out.print(row+" "+col);
+                celdas[row][col].getBoton().setIcon(new ImageIcon("Imagenes/VACIO.jpg"));
                 celdas[row][col].setVacia(true);
                 for(int i=firstRow; i<=lastRow;i++)
                     for(int j =firstCol; j<=lastCol;j++)
                         if(!celdas[i][j].getMina()&&celdas[i][j].getNumMinasAd()==0&&(col!=j || row!=i)){
-                            celdas[i][j].getBoton().setText("V");
+                            celdas[i][j].getBoton().setIcon(new ImageIcon("Imagenes/VACIO.jpg"));
                             if(celdas[i][j].getVacia()==false){
                                 buscarMinas(j,i);
                             }
                         }else if(!celdas[i][j].getVacia())
-                            celdas[i][j].getBoton().setText(Integer.toString(celdas[i][j].getNumMinasAd()));
-
-            }
-        
+                            setNumero(celdas[i][j]);
+            }     
    }
+    
+    
+    public void setNumero(Celda celda){
+        int numAd=celda.getNumMinasAd();
+        switch (numAd) {
+            case 1:   celda.getBoton().setIcon(new ImageIcon("Imagenes/1.jpg"));
+                     break;
+            case 2:  celda.getBoton().setIcon(new ImageIcon("Imagenes/2.jpg"));
+                     break;
+            case 3:  celda.getBoton().setIcon(new ImageIcon("Imagenes/3.jpg"));
+                     break;
+            case 4:  celda.getBoton().setIcon(new ImageIcon("Imagenes/4.jpg"));
+                     break;
+            case 5:  celda.getBoton().setIcon(new ImageIcon("Imagenes/5.jpg"));
+                     break;
+            case 6:  celda.getBoton().setIcon(new ImageIcon("Imagenes/6.jpg"));
+                     break;
+            case 7:  celda.getBoton().setIcon(new ImageIcon("Imagenes/7.jpg"));
+                     break;
+            case 8:  celda.getBoton().setIcon(new ImageIcon("Imagenes/8.jpg"));
+                     break;
+        }
+     }
     
     public void contarTablero(){
         for (int i=0;i<8;i++)
@@ -176,12 +195,6 @@ public class Tablero
             for(int j =firstCol; j<=lastCol;j++)
                 if(celdas[i][j].getMina())
                     celdas[row][col].setNumMinasAd(celdas[row][col].getNumMinasAd()+1);
-                    
-
-           
-       // if(celdas[row][col].getNumMinasAd()!=0)
-         //   celdas[row][col].getBoton().setText(Integer.toString(celdas[row][col].getNumMinasAd()));
-        
        }
     
     public int getRow(int row){
@@ -204,34 +217,37 @@ public class Tablero
     
     public void reiniciar(){
         
+        if(primerTurno==false){
         limpiarBotones(0,0);
-        Interfaz.panelMatriz.removeAll();
-        rellenaMatriz(0);
-        Interfaz.rellenaPanelMatriz(0,0);
+        limpìarMinasYNum();
         primerTurno=true;
         numMinMarca=10;
         Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
-    }
+        }
+   }
 
-   /* public void limpiarBotones(){
-    //Pasar este metodo a recursivo
+    public void limpìarMinasYNum(){
         for(int i=0;i<8;i++)
             for(int j=0;j<8;j++)
-                celdas[i][j].getBoton().setText("");    
-    }*/
-    public void limpiarBotones(int i, int j){
+                if(celdas[i][j].getMina())
+                    celdas[i][j].setMina(false);
+                else if(celdas[i][j].getNumMinasAd()>0)
+                        celdas[i][j].setNumMinasAd(0);
+    }
+    
+   public void limpiarBotones(int i, int j){ 
         if(j==celdas.length-1){
             if (i==celdas.length-1){
-                celdas[i][j].getBoton().setText("");
+                celdas[i][j].getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
             }
             else{
-                celdas[i][j].getBoton().setText("");
+                celdas[i][j].getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
                 limpiarBotones(i+1,0);
             }
             
         }
         else{
-            celdas[i][j].getBoton().setText("");
+            celdas[i][j].getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
             limpiarBotones(i,j+1);
         }
     }

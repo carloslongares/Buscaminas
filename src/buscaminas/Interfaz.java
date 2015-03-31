@@ -9,21 +9,14 @@ import javax.swing.*;
 
 /**
  *
- * @author Carlos Longares , Daniel Fenollar , Marca Diago
+ * @author Carlos Longares , Daniel Fenollar , Marc Diago
  */
 public class Interfaz {
-    public static JButton botonRei = new JButton("Re");
+    public static JButton botonRei = new JButton();
     public static    Tablero tablero = new Tablero();
     public static JPanel panelMatriz= new JPanel();
     public static JLabel numMinasLab = new JLabel("Minas restantes: 10"); 
-   /* public static void rellenaPanelMatriz(){
-        //Pasar este metodo a recursivo
-        for(int i=0; i<tablero.celdas.length;i++)
-            for (int j=0;j<tablero.celdas.length;j++)
-                panelMatriz.add(tablero.celdas[i][j].getBoton());
-        
-    }*/
-    
+
     public static void rellenaPanelMatriz(int i, int j){
         if(j==tablero.celdas.length-1){
             if (i==tablero.celdas.length-1){
@@ -60,7 +53,8 @@ public class Interfaz {
         panelTop.setBounds(30, 30, 420, 90);
         panelTop.setLayout(null);
         
-        botonRei.setBounds(0, 0, 70, 50);
+        botonRei.setIcon(new ImageIcon("Imagenes/REINICIO.jpg"));
+        botonRei.setBounds(0, 0, 53, 50);
         numMinasLab.setBounds(200,0,120, 35);
         panelTop.add(botonRei);
         panelTop.add(numMinasLab);
