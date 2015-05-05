@@ -219,21 +219,22 @@ public class Tablero
         
         if(primerTurno==false){
         limpiarBotones(0,0);
-        limpìarMinasYNum();
+        limpiarCeldas();
         primerTurno=true;
         numMinMarca=10;
         Interfaz.numMinasLab.setText("Minas restantes: "+numMinMarca);
         }
    }
 
-    public void limpìarMinasYNum(){
+    public void limpiarCeldas(){
         for(int i=0;i<8;i++)
-            for(int j=0;j<8;j++)
-                if(celdas[i][j].getMina())
+            for(int j=0;j<8;j++){  
                     celdas[i][j].setMina(false);
-                else if(celdas[i][j].getNumMinasAd()>0)
-                        celdas[i][j].setNumMinasAd(0);
-    }
+                    celdas[i][j].setNumMinasAd(0);
+                    celdas[i][j].setVacia(false);
+                    celdas[i][j].setMarca(false);
+            }
+     }
     
    public void limpiarBotones(int i, int j){ 
         if(j==celdas.length-1){
