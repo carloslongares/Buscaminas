@@ -34,7 +34,7 @@ public class Interfaz {
         }
     }
     
-    public static void main(String[] args){
+    public Interfaz(){
      
         //PARTE GRAFICA
         JFrame frame = new JFrame("Buscaminas");

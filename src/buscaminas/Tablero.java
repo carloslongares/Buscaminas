@@ -11,13 +11,20 @@ import javax.swing.*;
  */
 public class Tablero
 {
-    public Celda[][] celdas = new Celda[8][8]; 
+    public Celda[][] celdas; 
     public boolean primerTurno = true;
     private int numMinMarca=10;
     
+    public Tablero (int n){
+        celdas = new Celda[n][n]; 
+        rellenaMatrizPeor(0,n);
+        //Boton de reinicio se le ha puesto un mouse listener para capturar el evento
+    
+    }
     public Tablero()
     {
-        rellenaMatriz(0);
+        celdas = new Celda[8][8]; 
+        rellenaMatriz(0,8);
         //Boton de reinicio se le ha puesto un mouse listener para capturar el evento
         Interfaz.botonRei.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -26,17 +33,30 @@ public class Tablero
          });
     }
     
-    
-    
-    public void rellenaMatriz(int a){
-        if(a<8){    
-            rellenaMatriz2(a,0);
-            rellenaMatriz(a+1);
+    public void rellenaMatrizPeor(int a,int n){
+        if(a<n){    
+            rellenaMatrizPeor2(a,0,n);
+            rellenaMatrizPeor(a+1,n);
         }
     } 
 
-    public void rellenaMatriz2(final int a,final int b){
-        if(b<8){
+    public void rellenaMatrizPeor2(final int a,final int b,int n){
+        if(b<n){
+            celdas[a][b]=new Celda();
+            rellenaMatrizPeor2(a,b+1,n);
+        }
+    }
+    
+    
+    public void rellenaMatriz(int a,int n){
+        if(a<n){    
+            rellenaMatriz2(a,0,n);
+            rellenaMatriz(a+1,n);
+        }
+    } 
+
+    public void rellenaMatriz2(final int a,final int b,int n){
+        if(b<n){
             celdas[a][b]=new Celda(new JButton());
             celdas[a][b].getBoton().setIcon(new ImageIcon("Imagenes/CELDA.jpg"));
             //A todos los botones de la matriz se les ha puesto un mouse listener para capturar los clicks o eventos
@@ -45,7 +65,7 @@ public class Tablero
                       juego(e,celdas[a][b],b,a);
                 }
              });
-            rellenaMatriz2(a,b+1);
+            rellenaMatriz2(a,b+1,n);
         }
     }
     
@@ -98,7 +118,7 @@ public class Tablero
         while(cont<10){
             int a=(int)(Math.random()*7);
             int b=(int)(Math.random()*7);
-            if(!celdas[a][b].getMina()&& (col!=b || row!=a)){
+            if(!celdas[a][b].getMina() && (col!=b || row!=a)){
                 celdas[a][b].setMina(true);
                 cont++;
             }
@@ -134,11 +154,9 @@ public class Tablero
             //obtengo la posicion de la ultima adyacente
             int lastCol=getCol(col+1);
             int lastRow=getRow(row+1);
-
-            if(celdas[row][col].getNumMinasAd()!=0&&!celdas[row][col].getMina())
+            if(celdas[row][col].getNumMinasAd()!=0)
                setNumero(celdas[row][col]);
             else{
-                System.out.print(row+" "+col);
                 celdas[row][col].getBoton().setIcon(new ImageIcon("Imagenes/VACIO.jpg"));
                 celdas[row][col].setVacia(true);
                 for(int i=firstRow; i<=lastRow;i++)
@@ -153,6 +171,28 @@ public class Tablero
             }     
    }
     
+     public int peorBuscarMinas(int col,int row,int dim){
+            //obtengo la posicion de la primera adyacente
+            int firstCol=getCol(col-1,dim-1);
+            int firstRow= getRow(row-1,dim-1);
+            //obtengo la posicion de la ultima adyacente
+            int lastCol=getCol(col+1,dim-1);
+            int lastRow=getRow(row+1,dim-1);
+            if(celdas[row][col].getNumMinasAd()!=0)
+               return 1;
+            else{
+                celdas[row][col].setVacia(true);
+                for(int i=firstRow; i<=lastRow;i++)
+                    for(int j =firstCol; j<=lastCol;j++)
+                        if(!celdas[i][j].getMina()&&celdas[i][j].getNumMinasAd()==0&&(col!=j || row!=i)){
+                            if(celdas[i][j].getVacia()==false){
+                                return 1+peorBuscarMinas(j,i,dim);
+                            }
+                        }else if(!celdas[i][j].getVacia())
+                        return 1;
+            }
+            return 1;
+   }
     
     public void setNumero(Celda celda){
         int numAd=celda.getNumMinasAd();
@@ -215,6 +255,23 @@ public class Tablero
             return col;
     }
     
+    public int getRow(int row,int n){
+        if(row<0){
+         return 0;
+        }else if(row>n)
+            return n;
+        else
+            return row;
+    }
+    
+    public int getCol(int col ,int n){
+        if(col<0){
+         return 0;
+        }else if(col>n)
+            return n;
+        else
+            return col;
+    }
     public void reiniciar(){
         
         if(primerTurno==false){

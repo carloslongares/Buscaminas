@@ -26,6 +26,17 @@ public class Celda
         /*cont++;*/
     }
    
+    public Celda()
+    {
+        this.boton=boton;
+        mina=false;
+        marca=false;
+        vacia = false;
+        numMinasAd=0;
+        minaContada=false;
+        /*cont++;*/
+    }
+        
     public JButton getBoton(){
         return boton;
     }
